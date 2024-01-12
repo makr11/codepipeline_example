@@ -1,0 +1,16 @@
+version: 0.2
+env:
+  exported-variables:
+    - IMAGE_TAG
+phases:
+  install:
+    runtime-versions:
+      nodejs: 18
+      python: 3.11
+    commands:
+      - cd infra/ci_cd/scripts
+      - pip install -r requirements.txt
+  build:
+    commands:
+      - python docker_asset.py $FOLDER_PATH $ECR_REPOSITORY_NAME $ACCOUNT $AWS_REGION
+      - . ./.env

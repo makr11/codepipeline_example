@@ -1,0 +1,21 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      nodejs: 18
+      python: 3.11
+    commands:
+      - npm install -g aws-cdk@2.118.0
+      - npm install -g cdk-assets@2
+      - cd infra
+      - pip install -r requirements.txt
+  build:
+    commands:
+      - cdk synth
+      # Service Stack Assets
+      - cdk-assets --path cdk.out/ServiceStack.assets.json --verbose publish "$(cat cdk.out/ServiceStack.assets.json | jq -r '.files | keys[0]'):current_account-current_region"
+artifacts:
+  files:
+    - '**/*'
+  base-directory: infra/cdk.out
