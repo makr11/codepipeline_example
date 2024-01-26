@@ -18,7 +18,7 @@ class Pipeline(Stack):
         source_output = codepipeline.Artifact("SourceArtifact")
         synth_output = codepipeline.Artifact("SynthArtifact")
 
-        pipeline = codepipeline.Pipeline(self, "Pipeline", pipeline_name=f"example-pipeline")
+        pipeline = codepipeline.Pipeline(self, "Pipeline", pipeline_name="example-pipeline")
 
         source_stage = pipeline.add_stage(stage_name="Source")
         source_action = codepipeline_actions.CodeStarConnectionsSourceAction(
@@ -48,7 +48,7 @@ class Pipeline(Stack):
                 self, "Build",
                 role=build_asset_role,
                 project_name="build_asset",
-                build_spec=codebuild.BuildSpec.from_source_filename(f"infra/ci_cd/buildspecs/build_asset.yml"),
+                build_spec=codebuild.BuildSpec.from_source_filename("infra/ci_cd/buildspecs/build_asset.yml"),
                 environment=codebuild.BuildEnvironment(
                     privileged=True,
                     build_image=codebuild.LinuxBuildImage.STANDARD_7_0,
@@ -60,7 +60,7 @@ class Pipeline(Stack):
                 "ACCOUNT": codebuild.BuildEnvironmentVariable(value=self.account),
                 "AWS_REGION": codebuild.BuildEnvironmentVariable(value=self.region),
                 "ECR_REPOSITORY_NAME": codebuild.BuildEnvironmentVariable(value=f"cdk-hnb659fds-container-assets-{self.account}-{self.region}"),
-                "FOLDER_PATH": codebuild.BuildEnvironmentVariable(value=str("service")),
+                "FOLDER_PATH": codebuild.BuildEnvironmentVariable(value="service"),
             },
         )
         
@@ -89,7 +89,7 @@ class Pipeline(Stack):
             action_name="CDKSynth",
             project=codebuild.PipelineProject(
                 self, "CDKSynthBuild",
-                project_name=f"cdk-synth",
+                project_name="cdk-synth",
                 role=synth_role,
                 build_spec=codebuild.BuildSpec.from_source_filename("infra/ci_cd/buildspecs/synth.yml"),
                 environment=codebuild.BuildEnvironment(
@@ -115,7 +115,7 @@ class Pipeline(Stack):
             codepipeline_actions.CloudFormationCreateUpdateStackAction(
                 action_name="ExampleService",
                 template_path=synth_output.at_path("ServiceStack.template.json"),
-                stack_name=f"service-stack",
+                stack_name="service-stack",
                 admin_permissions=True,
                 extra_inputs=[synth_output]
             ),

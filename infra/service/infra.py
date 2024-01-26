@@ -20,7 +20,7 @@ class Service(Stack):
 
         lmb.DockerImageFunction(
             self, "Service",
-            function_name=f"service-example",
+            function_name="service-example",
             log_retention=logs.RetentionDays.ONE_MONTH,
             code=lmb.DockerImageCode.from_ecr(repository=ecr_repo, tag_or_digest=os.getenv("SERVICE_IMAGE_TAG"))
         )

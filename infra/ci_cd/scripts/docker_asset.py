@@ -4,7 +4,6 @@ import boto3
 
 import argparse
 import os
-from datetime import datetime
 from pathlib import Path
 
 client = docker.from_env()
